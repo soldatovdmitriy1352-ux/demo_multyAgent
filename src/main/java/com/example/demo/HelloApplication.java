@@ -1,23 +1,35 @@
 package com.example.demo;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import com.example.demo.config.AppConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import javax.swing.*;
 
-public class HelloApplication extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
-    }
+/**
+ * Main entry point for the Swing-based Multi-Agent System.
+ */
+public class HelloApplication {
+    private static final Logger logger = LoggerFactory.getLogger(HelloApplication.class);
 
     public static void main(String[] args) {
-        launch();
+        // Load configuration
+        new AppConfig();
+
+        // Initialize UI on EDT (Event Dispatch Thread)
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // Set system look and feel
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                logger.warn("Could not set look and feel: {}", e.getMessage());
+            }
+
+            // Create and show main window directly on EDT
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.setVisible(true);
+        });
+
+        logger.info("Multi-Agent System started");
     }
 }
